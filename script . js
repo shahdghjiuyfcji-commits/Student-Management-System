@@ -1,0 +1,80 @@
+// 1. هيكلة بيانات الطالب (Class & Constructor)
+class Student {
+    constructor(id, name, grades, attendance) {
+        this.id = id;
+        this.name = name;
+        this.grades = grades;         // مصفوفة درجات 3 مواد
+        this.attendance = attendance; // نسبة الحضور
+/ أ) دالة حساب المتوسط (باستخدام reduce)
+    calculateAverage() {
+        const sum = this.grades.reduce((total, grade) => total + grade, 0);
+        return sum / this.grades.length;
+    }
+
+    // ب) دالة التقدير بناءً على المتوسط
+    getGradeLetter(avg) {
+        if (avg >= 90) return 'A';
+        if (avg >= 80) return 'B';
+        if (avg >= 70) return 'C';
+        if (avg >= 60) return 'D';
+        if (avg >= 50) return 'E';
+        return 'F';
+    }
+
+    // ج) دالة النتيجة النهائية (باستخدام && لشرط المتوسط والحضور)
+    getFinalStatus() {}
+        const avg = this.calculateAverage();
+        if (avg >= 50 && this.attendance >= 75) {
+            return "ناجح";
+        } else {
+            return "يحتاج مراجعة";
+        }
+        {}
+        / 3. نظام تشغيل الجامعة (Objects Array)
+const studentsList = [
+    new Student(101, "أحمد محمد", [85, 90, 88], 90),   // طالب متفوق
+    new Student(102, "محمود علي", [42, 45, 48], 80),   // طالب متعثر (متوسطه بين 40 و 49)
+    new Student(103, "سارة حسن", [70, 75, 72], 85),   // طالبة مستوى جيد
+    new Student(104, "فاطمة عمر", [44, 40, 46], 70)    // طالبة متعثرة (متوسطها بين 40 و 49)
+];
+
+// 5. المخرجات (Console Logging) - تقرير الطلاب بالكامل
+console.log("=== تقرير أداء الطلاب بالكامل ===");
+studentsList.forEach(student => {
+    const avg = student.calculateAverage();
+    console.log(رقم الجلوس: ${student.id} | الاسم: ${student.name} | المتوسط: ${avg.toFixed(2)} | التقدير: ${student.getGradeLetter(avg)} | النتيجة: ${student.getFinalStatus()});
+});
+// 4. لجنة الرأفة (Array Methods)
+// الاستخراج: فلترة الطلاب المتعثرين (الذين تتراوح متوسطاتهم بين 40 و 49)
+const strugglingStudents = studentsList.filter(student => {
+    const avg = student.calculateAverage();
+    return avg >= 40 && avg < 50;
+});
+
+console.log("\n=== الطلاب المتعثرين قبل الرأفة ===");
+console.log(strugglingStudents);
+
+// المعالجة: استخدام map لإضافة 5 درجات رأفة للمتوسط
+const studentsAfterMercy = strugglingStudents.map(student => {
+    const oldAvg = student.calculateAverage();
+    const newAvg = oldAvg + 5; // إضافة 5 درجات رأفة
+    return {
+        id: student.id,
+        name: student.name,
+        previousAverage: oldAvg,
+        newAverage: newAvg,
+        newStatus: newAvg >= 50 && student.attendance >= 75 ? "ناجح بعد الرأفة" : "يحتاج مراجعة إضافية"
+    };
+});
+
+console.log("\n=== مصفوفة الطلاب المتعثرين بعد تطبيق درجات الرأفة ===");
+console.log(studentsAfterMercy);
+
+// التحليل ومتوسط الرأفة مع درع الحماية (لمنع القسمة على صفر)
+let postMercyAverage = 0;
+if (studentsAfterMercy.length > 0) {
+    const totalNewAverages = studentsAfterMercy.reduce((sum, student) => sum + student.newAverage, 0);
+    postMercyAverage = totalNewAverages / studentsAfterMercy.length;
+}
+
+console.log(\n=== المتوسط العام لدرجات المتعثرين بعد الرأفة: ${postMercyAverage.toFixed(2)}===');
